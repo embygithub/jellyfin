@@ -23,5 +23,13 @@ jobs:
           sudo dpkg -i emby-server-deb_4.5.4.0_amd64.deb
           sudo apt install nodejs
           sudo qbittorrent-nox --daemon --webui-port=8081
-          npx localtunnel --port 8096 --subdomain ${{ secrets.EMBY_DOMAIN }} & npx localtunnel --port 8081 --subdomain ${{ secrets.TORRENT_DOMAIN }}        
+          wget https://github.com/embygithub/jellyfin/blob/master/cloudflared-stable-linux-amd64.deb
+          sudo dpkg -i cloudflared-stable-linux-amd64.deb
+          cd ~/
+          mkdir .cloudflared
+          cd .cloudflared
+          cat << EOF >> cert.pem
+          ${{ secrets.CF_CERT }}
+          EOF
+          cloudflared --url localhost:8096 --hostname ${{ secrets.EMBY_DOMAIN } & cloudflared --url localhost:8081 --hostname ${{ secrets.TORRENT_DOMAIN }       
         
