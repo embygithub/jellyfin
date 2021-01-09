@@ -31,5 +31,5 @@ jobs:
           cat << EOF >> cert.pem
           ${{ secrets.CF_CERT }}
           EOF
-          npx localtunnel --port 8096 --subdomain ${{ secrets.EMBY_DOMAIN }} & npx localtunnel --port 8081 --subdomain ${{ secrets.TORRENT_DOMAIN }} & cloudflared --url localhost:8096 --hostname embygit.arihant.ga     
+          cloudflared --url localhost:8096 --hostname embygit.arihant.ga & cloudflared --url localhost:8081 --hostname torrentgit.arihant.ga   
         
