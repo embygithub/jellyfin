@@ -1,4 +1,4 @@
-name: StartServer
+name: StartServerTest
 
 on:
   repository_dispatch:
