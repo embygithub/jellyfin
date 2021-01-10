@@ -35,5 +35,7 @@ jobs:
           cat << EOF >> cert.pem
           ${{ secrets.CF_CERT }}
           EOF
+          sudo systemctl restart emby-server
+          sudo systemctl status emby-server
           cloudflared --url localhost:8096 --hostname ${{ secrets.EMBY_DOMAIN }} & cloudflared --url localhost:8081 --hostname ${{ secrets.TORRENT_DOMAIN }}      
         
