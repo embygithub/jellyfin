@@ -16,6 +16,7 @@ jobs:
       - name: Emby Install
         run: |
           sudo add-apt-repository ppa:qbittorrent-team/qbittorrent-stable
+          sudo apt-get install python3-setuptools
           sudo apt install qbittorrent-nox
           sudo adduser --system --group qbittorrent-nox
           sudo adduser runner qbittorrent-nox
