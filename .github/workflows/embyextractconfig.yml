@@ -31,7 +31,7 @@ jobs:
           cat << EOF >> cert.pem
           ${{ secrets.CF_CERT }}
           EOF
-          timeout 4m cloudflared --url localhost:8096 --hostname ${{ secrets.EMBY_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for emby, but that's OK" ) & timeout 4m npx localtunnel --port 8081 --subdomain ${{ secrets.TORRENT_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for tor, but that's OK" )
+          timeout 4m cloudflared --url localhost:8096 --hostname ${{ secrets.EMBY_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for emby, but that's OK" ) & timeout 4m cloudflared --url localhost:8081 --hostname ${{ secrets.TORRENT_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for tor, but that's OK" )
           echo "Command Runs !" 
           sudo systemctl stop emby-server
           sudo cp -R /var/lib/emby /home/emby
