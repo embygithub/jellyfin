@@ -1,4 +1,4 @@
-name: StartServerEmby
+name: Extract Config
 
 on:
   repository_dispatch:
