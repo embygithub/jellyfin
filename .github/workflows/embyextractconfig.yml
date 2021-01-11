@@ -25,7 +25,6 @@ jobs:
           sudo qbittorrent-nox --daemon --webui-port=8081
           wget https://github.com/embygithub/jellyfin/blob/master/cloudflared-stable-linux-amd64.deb
           sudo dpkg -i cloudflared-stable-linux-amd64.deb
-          mkdir /home/runner/Downloads
           cd ~/
           mkdir .cloudflared
           cd .cloudflared
