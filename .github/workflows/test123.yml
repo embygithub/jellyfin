@@ -23,9 +23,10 @@ jobs:
           sudo dpkg -i emby-server-deb_4.5.4.0_amd64.deb
           sudo systemctl stop emby-server
           sudo rm -r /var/lib/emby
-          wget https://bashupload.com/-IlY6/embyconfig.zip
-          sudo unzip embyconfig.zip
+          sudo pip3 install gdown
+          gdown ${{ secrets.EMBY_CONFIG_LINK }}
           ls
+          sudo unzip embyconfig.zip
           sudo mv emby /var/lib/
           sudo chown -R emby:emby /var/lib/emby
           sudo apt install nodejs
