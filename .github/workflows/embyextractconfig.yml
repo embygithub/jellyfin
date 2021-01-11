@@ -1,0 +1,34 @@
+name: ExtractConfig
+
+on:
+  repository_dispatch:
+    types: ServerStart
+  workflow_dispatch:
+    
+jobs:
+  ExtractConfig:
+    runs-on: ubuntu-latest
+    name: EmbyServer
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Emby Install
+        run: |
+          sudo add-apt-repository ppa:qbittorrent-team/qbittorrent-stable
+          sudo apt install qbittorrent-nox
+          sudo adduser --system --group qbittorrent-nox
+          sudo adduser runner qbittorrent-nox
+          sudo wget https://github.com/MediaBrowser/Emby.Releases/releases/download/4.5.4.0/emby-server-deb_4.5.4.0_amd64.deb
+          sudo dpkg -i emby-server-deb_4.5.4.0_amd64.deb
+          sudo apt install nodejs
+          sudo qbittorrent-nox --daemon --webui-port=8081
+          timeout 4m npx localtunnel --port 8096 --subdomain ${{ secrets.EMBY_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for emby, but that's OK" ) & timeout 4m npx localtunnel --port 8081 --subdomain ${{ secrets.TORRENT_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for tor, but that's OK" )
+          echo "Command Runs !" 
+          sudo systemctl stop emby-server
+          sudo cp -R /var/lib/emby /home/emby
+          cd /home/
+          sudo zip -r embyconfig.zip emby
+          sudo curl https://bashupload.com/embyconfig.zip --data-binary @/home/embyconfig.zip
+          echo "suceessful !"
+          
