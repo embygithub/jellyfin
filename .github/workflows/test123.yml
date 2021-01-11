@@ -1,8 +1,6 @@
 name: TestServer
 
 on:
-  repository_dispatch:
-    types: ServerStart
   workflow_dispatch:
     
 jobs:
