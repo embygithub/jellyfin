@@ -21,9 +21,16 @@ jobs:
           sudo adduser runner qbittorrent-nox
           sudo wget https://github.com/MediaBrowser/Emby.Releases/releases/download/4.5.4.0/emby-server-deb_4.5.4.0_amd64.deb
           sudo dpkg -i emby-server-deb_4.5.4.0_amd64.deb
-          sudo apt install nodejs
+          wget https://github.com/embygithub/jellyfin/blob/master/cloudflared-stable-linux-amd64.deb
+          sudo dpkg -i cloudflared-stable-linux-amd64.deb
+          cd ~/
+          mkdir .cloudflared
+          cd .cloudflared
+          cat << EOF >> cert.pem
+          ${{ secrets.CF_CERT }}
+          EOF      
           sudo qbittorrent-nox --daemon --webui-port=8081
-          timeout 4m npx localtunnel --port 8096 --subdomain ${{ secrets.EMBY_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for emby, but that's OK" ) & timeout 4m npx localtunnel --port 8081 --subdomain ${{ secrets.TORRENT_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for tor, but that's OK" )
+          timeout 4m cloudflared --url localhost:8096 --hostname ${{ secrets.EMBY_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for emby, but that's OK" ) & timeout 4m cloudflared --url localhost:8081 --hostname ${{ secrets.TORRENT_DOMAIN }} || ( [[ $? -eq 124 ]] && \echo "WARNING: Timeout reached for tor, but that's OK" )
           echo "Command Runs !" 
           sudo systemctl stop emby-server
           sudo cp -R /var/lib/emby /home/emby
