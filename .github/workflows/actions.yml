@@ -19,9 +19,16 @@ jobs:
           sudo apt install qbittorrent-nox
           sudo adduser --system --group qbittorrent-nox
           sudo adduser runner qbittorrent-nox
+          sudo apt-get install python3-setuptools
           sudo wget https://github.com/MediaBrowser/Emby.Releases/releases/download/4.5.4.0/emby-server-deb_4.5.4.0_amd64.deb
           sudo dpkg -i emby-server-deb_4.5.4.0_amd64.deb
-          sudo apt install nodejs
+          sudo systemctl stop emby-server
+          sudo rm -r /var/lib/emby
+          sudo pip3 install gdown
+          gdown ${{ secrets.EMBY_CONFIG_LINK }}
+          sudo unzip embyconfig.zip
+          sudo mv emby /var/lib/
+          sudo chown -R emby:emby /var/lib/emby
           sudo qbittorrent-nox --daemon --webui-port=8081
           wget https://github.com/embygithub/jellyfin/blob/master/cloudflared-stable-linux-amd64.deb
           sudo dpkg -i cloudflared-stable-linux-amd64.deb
@@ -31,5 +38,6 @@ jobs:
           cat << EOF >> cert.pem
           ${{ secrets.CF_CERT }}
           EOF
+          sudo systemctl start emby-server
           cloudflared --url localhost:8096 --hostname ${{ secrets.EMBY_DOMAIN }} & cloudflared --url localhost:8081 --hostname ${{ secrets.TORRENT_DOMAIN }}      
         
